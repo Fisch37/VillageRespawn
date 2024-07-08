@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "villagerespawn",
+  "version": "${version}",
+  "name": "VillageRespawn",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/Fisch37/VillageRespawn"
+  },
+  "license": "MIT",
+  "icon": "assets/villagerespawn/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "de.fisch37.villagerespawn.client.VillageRespawnClient"
+    ],
+    "main": [
+      "de.fisch37.villagerespawn.VillageRespawn"
+    ],
+    "server": [
+      "de.fisch37.villagerespawn.server.VillageRespawnServer"
+    ]
+  },
+  "mixins": [
+    "villagerespawn.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
