@@ -43,10 +43,10 @@ public class StructureChecker {
         }
     }
 
-    public static boolean isInVillage(ServerPlayerEntity player) {
+    public static @Nullable StructureStart isInVillage(ServerPlayerEntity player) {
         return isInVillage(player.getServerWorld(), player.getBlockPos());
     }
-    public static boolean isInVillage(ServerWorld world, BlockPos position) {
+    public static @Nullable StructureStart isInVillage(ServerWorld world, BlockPos position) {
         StructureAccessor accessor = world.getStructureAccessor();
         Set<Structure> structures = accessor
                 .getStructureReferences(position)
@@ -62,10 +62,10 @@ public class StructureChecker {
             StructureStart start = accessor.getStructureAt(position, struct);
             if (start != StructureStart.DEFAULT)
                 // Boils down to a successful box check ^-^
-                return true;
+                return start;
         }
 
-        return false;
+        return null;
     }
 
     private static boolean structureIsVillage(Structure structure, ServerWorld world) {
