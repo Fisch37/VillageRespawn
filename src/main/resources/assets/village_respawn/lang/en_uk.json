@@ -1,4 +1,6 @@
 {
+  "village_respawn.bell.no_village_error": "Can only set spawn on bells inside villages",
+  "village.leaving": "Leaving ",
   "village.name.0": "MillerVille",
   "village.name.1": "Timeston",
   "village.name.2": "Krosstoen",

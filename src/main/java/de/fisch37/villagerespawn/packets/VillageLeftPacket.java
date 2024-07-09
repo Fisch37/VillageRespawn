@@ -4,10 +4,10 @@ import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.PacketByteBuf;
 
-public record VillageLeftPacket() implements FabricPacket {
+public record VillageLeftPacket(String name) implements FabricPacket {
     public static final PacketType<VillageLeftPacket> TYPE = PacketType.create(
             PacketTypes.VILLAGE_LEFT,
-            (buf) -> new VillageLeftPacket()
+            (buf) -> new VillageLeftPacket(buf.readString())
     );
 
     /**
@@ -17,7 +17,7 @@ public record VillageLeftPacket() implements FabricPacket {
      */
     @Override
     public void write(PacketByteBuf buf) {
-
+        buf.writeString(name);
     }
 
     /**

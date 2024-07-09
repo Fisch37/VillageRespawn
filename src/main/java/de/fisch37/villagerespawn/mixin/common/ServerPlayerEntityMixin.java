@@ -71,7 +71,7 @@ public abstract class ServerPlayerEntityMixin {
                 ServerNetworking.sendVillage(player, village, villageIsNew);
             } else {
                 if (lastVillage != null)
-                    ServerNetworking.sendLeftVillage(player);
+                    ServerNetworking.sendLeftVillage(player, lastVillage);
                 lastVillage = null;
             }
         }

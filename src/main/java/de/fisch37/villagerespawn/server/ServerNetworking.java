@@ -19,8 +19,8 @@ public abstract class ServerNetworking {
         });
     }
 
-    public static void sendLeftVillage(ServerPlayerEntity player) {
+    public static void sendLeftVillage(ServerPlayerEntity player, VillageIdentifier village) {
         assert player.getServer() != null;
-        player.getServer().execute(() -> ServerPlayNetworking.send(player, new VillageLeftPacket()));
+        player.getServer().execute(() -> ServerPlayNetworking.send(player, new VillageLeftPacket(village.name())));
     }
 }
