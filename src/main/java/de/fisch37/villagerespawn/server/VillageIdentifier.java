@@ -27,7 +27,7 @@ public record VillageIdentifier(BlockPos position, BlockBox boundingBox, String 
 
     private static String getRandomName() {
         int value = RANDOMIZER.nextBetween(0, VILLAGE_NAME_POOL_SIZE);
-        return String.format("village.%s.%d", MOD_ID, value);
+        return String.format("village.name.%d", value);
     }
 
     public static VillageIdentifier fromStructure(StructureStart structure) {
