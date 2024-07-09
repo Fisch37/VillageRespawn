@@ -6,6 +6,7 @@ import de.fisch37.villagerespawn.server.VillageIdentifier;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkSectionPos;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +15,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static de.fisch37.villagerespawn.VillageRespawn.LOG;
 import static de.fisch37.villagerespawn.VillageRespawn.getState;
+import static de.fisch37.villagerespawn.server.ServerUtils.findSafePosition;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin {
@@ -60,14 +63,7 @@ public abstract class ServerPlayerEntityMixin {
                 boolean villageIsNew = getState().setVillageVisited(player, village);
                 if (villageIsNew) {
                     System.out.format("Found new village %s", village.name());
-                    // FIXME: Fix spawnpoint obstruction
-                    player.setSpawnPoint(
-                            world.getRegistryKey(),
-                            StructureChecker.getBellIn(world, structure),
-                            0,
-                            true,
-                            true
-                    );
+                    updateSpawn(player, world, structure);
                 } else {
                     System.out.format("Found old village %s", village.name());
                 }
@@ -79,5 +75,29 @@ public abstract class ServerPlayerEntityMixin {
                 lastVillage = null;
             }
         }
+    }
+
+    @Unique
+    private static void updateSpawn(ServerPlayerEntity player, ServerWorld world, StructureStart structure) {
+        BlockPos spawn = StructureChecker.getBellIn(world, structure);
+        if (spawn != null) {
+            spawn = findSafePosition(world, spawn);
+        }
+        if (spawn == null) {
+            LOG.warn("Could not find bell in village or was obscured. Attempting to use player position");
+            spawn = findSafePosition(world, player.getBlockPos());
+            if (spawn == null) {
+                LOG.error("Could not generate valid spawnpoint for village :c");
+                return;
+            }
+        }
+        // FIXME: Fix spawnpoint obstruction
+        player.setSpawnPoint(
+                world.getRegistryKey(),
+                spawn,
+                0,
+                true,
+                true
+        );
     }
 }
