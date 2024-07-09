@@ -4,6 +4,7 @@ import de.fisch37.villagerespawn.server.ServerNetworking;
 import de.fisch37.villagerespawn.server.StructureChecker;
 import de.fisch37.villagerespawn.server.VillageIdentifier;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.math.ChunkSectionPos;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +43,8 @@ public abstract class ServerPlayerEntityMixin {
          */
 
         ServerPlayerEntity player = (ServerPlayerEntity)((Object)this);
+        ServerWorld world = player.getServerWorld();
+        assert world != null;
 
         ChunkSectionPos subchunkPos = ChunkSectionPos.from(player.getBlockPos());
         if (!subchunkPos.equals(lastPosition)) {
@@ -57,6 +60,14 @@ public abstract class ServerPlayerEntityMixin {
                 boolean villageIsNew = getState().setVillageVisited(player, village);
                 if (villageIsNew) {
                     System.out.format("Found new village %s", village.name());
+                    // FIXME: Fix spawnpoint obstruction
+                    player.setSpawnPoint(
+                            world.getRegistryKey(),
+                            StructureChecker.getBellIn(world, structure),
+                            0,
+                            true,
+                            true
+                    );
                 } else {
                     System.out.format("Found old village %s", village.name());
                 }

@@ -8,6 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.poi.PointOfInterestStorage;
@@ -27,20 +28,26 @@ public class StructureChecker {
             "village"
     ));
 
-    private static @Nullable BlockPos getNearestBell(
+    public static @Nullable BlockPos getBellIn(
             ServerWorld world,
-            BlockPos center
+            StructureStart structure
     ) {
         try{
-            return world.getPointOfInterestStorage().getNearestTypeAndPosition(
+            return world.getPointOfInterestStorage().getNearestPosition(
                     reg -> reg.matchesKey(PointOfInterestTypes.MEETING),
-                    center,
-                    RANGE * 16,
+                    pos -> structure.getBoundingBox().contains(pos),
+                    structure.getBoundingBox().getCenter(),
+                    getLargestSize(structure),
                     PointOfInterestStorage.OccupationStatus.ANY
-                ).orElseThrow().getSecond();
+                ).orElseThrow();
         } catch (NoSuchElementException e) {
             return null;
         }
+    }
+
+    private static int getLargestSize(StructureStart structure) {
+        Vec3i size = structure.getBoundingBox().getDimensions();
+        return Math.max(Math.max(size.getX(), size.getY()), size.getZ());
     }
 
     public static @Nullable StructureStart isInVillage(ServerPlayerEntity player) {
