@@ -37,9 +37,6 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // Lithostitched. Hopefully going to be optional but I won't care either way
-    modImplementation "maven.modrinth:lithostitched:${project.litho_version}"
 }
 
 processResources {
