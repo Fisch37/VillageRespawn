@@ -69,10 +69,16 @@ public class StructureChecker {
     }
 
     private static boolean structureIsVillage(Structure structure, ServerWorld world) {
-        RegistryEntryList<Structure> validStructures = world.getRegistryManager()
-                .get(RegistryKeys.STRUCTURE)
-                .getEntryList(VILLAGES_TAG)
-                .orElseThrow();
+        RegistryEntryList<Structure> validStructures;
+        try{
+            validStructures = world.getRegistryManager()
+                    .get(RegistryKeys.STRUCTURE)
+                    .getEntryList(VILLAGES_TAG)
+                    .orElseThrow();
+        } catch (NoSuchElementException e) {
+            LOG.error("Could not find villages tag. VillageRespawn will not function!");
+            return false;
+        }
 
         return validStructures.stream()
                 .anyMatch(entry -> entry.value() == structure);
