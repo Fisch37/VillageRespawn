@@ -1,6 +1,7 @@
 package de.fisch37.villagerespawn;
 
 import de.fisch37.villagerespawn.server.ServerState;
+import de.fisch37.villagerespawn.server.StructureChecker;
 import de.fisch37.villagerespawn.server.VillageIdentifier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
@@ -11,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -47,8 +49,15 @@ public class VillageRespawn implements ModInitializer {
         if (!(block.getBlock() instanceof BellBlock))
             return ActionResult.PASS;
 
-        if (player instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) player).setSpawnPoint(
+        if (player instanceof ServerPlayerEntity serverPlayer) {
+            if (StructureChecker.isInVillage(serverPlayer.getServerWorld(), blockHitResult.getBlockPos()) == null) {
+                serverPlayer.sendMessageToClient(
+                        Text.translatable(String.format("%s.bell.no_village_error", MOD_ID)),
+                        true
+                );
+                return ActionResult.CONSUME;
+            }
+            serverPlayer.setSpawnPoint(
                     world.getRegistryKey(),
                     findSafePosition(world, blockHitResult.getBlockPos()),
                     -player.getYaw(),
