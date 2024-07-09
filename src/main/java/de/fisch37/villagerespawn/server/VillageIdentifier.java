@@ -12,7 +12,7 @@ import net.minecraft.util.math.random.Random;
 import static de.fisch37.villagerespawn.VillageRespawn.MOD_ID;
 
 public record VillageIdentifier(BlockPos position, BlockBox boundingBox, String name) {
-    public static final short VILLAGE_NAME_POOL_SIZE = 10;
+    public static final short VILLAGE_NAME_POOL_SIZE = 666;
     private final static Identifier VILLAGE_RANDOMIZER = Identifier.of(MOD_ID, "village_name_random");
     private static Random RANDOMIZER;
 
