@@ -8,6 +8,6 @@ public class VillageRespawnClient implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
-
+        ClientNetworking.register();
     }
 }

@@ -1,5 +1,6 @@
 package de.fisch37.villagerespawn.mixin.common;
 
+import de.fisch37.villagerespawn.server.ServerNetworking;
 import de.fisch37.villagerespawn.server.StructureChecker;
 import de.fisch37.villagerespawn.server.VillageIdentifier;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -60,9 +61,10 @@ public abstract class ServerPlayerEntityMixin {
                     System.out.format("Found old village %s", village.name());
                 }
                 System.out.println();
+                ServerNetworking.sendVillage(player, village, villageIsNew);
             } else {
                 if (lastVillage != null)
-                    System.out.println("Left village");
+                    ServerNetworking.sendLeftVillage(player);
                 lastVillage = null;
             }
         }
