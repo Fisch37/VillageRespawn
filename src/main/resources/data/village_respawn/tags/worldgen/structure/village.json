@@ -1,5 +1,9 @@
 {
   "values": [
-    "#minecraft:village"
+    "#minecraft:village",
+    {
+      "id": "#ctov:village",
+      "required": false
+    }
   ]
 }
