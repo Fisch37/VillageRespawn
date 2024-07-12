@@ -1,6 +1,5 @@
 package de.fisch37.villagerespawn.client;
 
-import com.mojang.datafixers.util.Function3;
 import de.fisch37.villagerespawn.packets.NewVillageEnteredPacket;
 import de.fisch37.villagerespawn.packets.OldVillageEnteredPacket;
 import de.fisch37.villagerespawn.packets.VillageLeftPacket;
@@ -25,7 +24,7 @@ public abstract class ClientNetworking {
     }
 
     public static void setNewVillageListener(
-            TriConsumer<NewVillageEnteredPacket, ClientPlayerEntity, PacketSender> listener
+            @NotNull TriConsumer<NewVillageEnteredPacket, ClientPlayerEntity, PacketSender> listener
     ) {
         newVillageListener = listener;
     }

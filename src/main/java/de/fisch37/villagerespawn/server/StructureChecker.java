@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 public class StructureChecker {
-    private final static int RANGE = 4;
     private final static Logger LOG = LoggerFactory.getLogger(StructureChecker.class);
     public final static TagKey<Structure> VILLAGES_TAG = TagKey.of(RegistryKeys.STRUCTURE, Identifier.of(
             "village_respawn",

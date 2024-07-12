@@ -1,8 +1,6 @@
 package de.fisch37.villagerespawn.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.loader.api.FabricLoader;
 
 public class VillageRespawnClient implements ClientModInitializer {
     /**
