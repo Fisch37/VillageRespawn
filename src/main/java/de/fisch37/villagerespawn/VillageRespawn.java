@@ -1,8 +1,8 @@
 package de.fisch37.villagerespawn;
 
+import de.fisch37.villagerespawn.server.ServerNetworking;
 import de.fisch37.villagerespawn.server.ServerState;
 import de.fisch37.villagerespawn.server.StructureChecker;
-import de.fisch37.villagerespawn.server.VillageIdentifier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -70,7 +70,8 @@ public class VillageRespawn implements ModInitializer {
 
     public void initialiseServer(MinecraftServer server, ServerWorld world) {
         STATE = ServerState.getServerState(server);
-        VillageIdentifier.initialise(world, STATE);
+        VillageIdentifier.initialise(world);
+        ServerNetworking.register(STATE);
     }
 
     public static ServerState getState() {

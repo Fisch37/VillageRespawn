@@ -15,6 +15,9 @@
     "client": [
       "de.fisch37.villagerespawn.client.VillageRespawnClient"
     ],
+    "journeymap": [
+      "de.fisch37.villagerespawn.client.JourneyMapIntegration"
+    ],
     "main": [
       "de.fisch37.villagerespawn.VillageRespawn"
     ],

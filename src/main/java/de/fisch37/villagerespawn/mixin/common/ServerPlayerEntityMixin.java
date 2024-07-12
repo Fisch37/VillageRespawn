@@ -2,7 +2,7 @@ package de.fisch37.villagerespawn.mixin.common;
 
 import de.fisch37.villagerespawn.server.ServerNetworking;
 import de.fisch37.villagerespawn.server.StructureChecker;
-import de.fisch37.villagerespawn.server.VillageIdentifier;
+import de.fisch37.villagerespawn.VillageIdentifier;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
@@ -55,7 +55,12 @@ public abstract class ServerPlayerEntityMixin {
 
             StructureStart structure = StructureChecker.isInVillage(player);
             if (structure != null) {
-                VillageIdentifier village = getState().getOrCreateVillage(structure);
+                StructureChecker.BellCache bellCache = new StructureChecker.BellCache(world, structure);
+                VillageIdentifier village = getState().getOrCreateVillage(
+                        world.getRegistryKey(),
+                        structure,
+                        bellCache::get
+                );
                 if (village == lastVillage)
                     return;
                 lastVillage = village;
@@ -63,7 +68,7 @@ public abstract class ServerPlayerEntityMixin {
                 boolean villageIsNew = getState().setVillageVisited(player, village);
                 if (villageIsNew) {
                     System.out.format("Found new village %s", village.name());
-                    updateSpawn(player, world, structure);
+                    updateSpawn(player, world, bellCache.get());
                 } else {
                     System.out.format("Found old village %s", village.name());
                 }
@@ -78,15 +83,18 @@ public abstract class ServerPlayerEntityMixin {
     }
 
     @Unique
-    private static void updateSpawn(ServerPlayerEntity player, ServerWorld world, StructureStart structure) {
-        BlockPos spawn = StructureChecker.getBellIn(world, structure);
-        if (spawn != null) {
-            spawn = findSafePosition(world, spawn);
+    private static void updateSpawn(
+            ServerPlayerEntity player,
+            ServerWorld world,
+            BlockPos bell
+    ) {
+        if (bell != null) {
+            bell = findSafePosition(world, bell);
         }
-        if (spawn == null) {
+        if (bell == null) {
             LOG.warn("Could not find bell in village or was obscured. Attempting to use player position");
-            spawn = findSafePosition(world, player.getBlockPos());
-            if (spawn == null) {
+            bell = findSafePosition(world, player.getBlockPos());
+            if (bell == null) {
                 LOG.error("Could not generate valid spawnpoint for village :c");
                 return;
             }
@@ -94,7 +102,7 @@ public abstract class ServerPlayerEntityMixin {
         // FIXME: Fix spawnpoint obstruction
         player.setSpawnPoint(
                 world.getRegistryKey(),
-                spawn,
+                bell,
                 0,
                 true,
                 true

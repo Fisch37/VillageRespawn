@@ -1,20 +1,14 @@
 package de.fisch37.villagerespawn.packets;
 
-import de.fisch37.villagerespawn.VillageIdentifier;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.PacketByteBuf;
 
-public record NewVillageEnteredPacket(VillageIdentifier village) implements FabricPacket {
-    public static final PacketType<NewVillageEnteredPacket> TYPE = PacketType.create(
-            PacketTypes.VILLAGE_ENTERED_NEW,
-            NewVillageEnteredPacket::new
+public record VisitedVillagesRequestPacket() implements FabricPacket {
+    public static final PacketType<VisitedVillagesRequestPacket> TYPE = PacketType.create(
+            PacketTypes.VISITED_VILLAGES_REQUEST,
+            (buf) -> new VisitedVillagesRequestPacket()
     );
-
-
-    public NewVillageEnteredPacket(PacketByteBuf buf) {
-        this(VillageIdentifier.fromNbt(buf.readNbt()));
-    }
 
     /**
      * Writes the contents of this packet to the buffer.
@@ -22,9 +16,7 @@ public record NewVillageEnteredPacket(VillageIdentifier village) implements Fabr
      * @param buf the output buffer
      */
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeNbt(village.toNbt());
-    }
+    public void write(PacketByteBuf buf) { }
 
     /**
      * Returns the packet type of this packet.

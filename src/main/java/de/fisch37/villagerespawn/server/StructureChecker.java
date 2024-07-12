@@ -90,4 +90,24 @@ public class StructureChecker {
         return validStructures.stream()
                 .anyMatch(entry -> entry.value() == structure);
     }
+
+    public static final class BellCache {
+        private final ServerWorld world;
+        private final StructureStart structure;
+        private BlockPos pos;
+
+        public BellCache(ServerWorld world, StructureStart structure) {
+            this.world = world;
+            this.structure = structure;
+        }
+
+        private void evaluate() {
+            this.pos = getBellIn(world, structure);
+        }
+
+        public BlockPos get() {
+            if (pos == null) evaluate();
+            return pos;
+        }
+    }
 }

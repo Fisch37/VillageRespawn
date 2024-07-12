@@ -14,6 +14,8 @@ public interface PacketTypes {
     Identifier VILLAGE_ENTERED_OLD = Objects.requireNonNull(Identifier.of(MOD_ID, "old_village_entered"));
     @NotNull
     Identifier VILLAGE_LEFT = Objects.requireNonNull(Identifier.of(MOD_ID, "village_left"));
-
-
+    @NotNull
+    Identifier VISITED_VILLAGES = Objects.requireNonNull(Identifier.of(MOD_ID, "visited_villages"));
+    @NotNull
+    Identifier VISITED_VILLAGES_REQUEST = Objects.requireNonNull(Identifier.of(MOD_ID, "visited_villages_req"));
 }

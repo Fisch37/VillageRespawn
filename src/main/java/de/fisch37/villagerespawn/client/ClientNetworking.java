@@ -1,65 +1,73 @@
 package de.fisch37.villagerespawn.client;
 
+import com.mojang.datafixers.util.Function3;
+import de.fisch37.villagerespawn.packets.NewVillageEnteredPacket;
+import de.fisch37.villagerespawn.packets.OldVillageEnteredPacket;
+import de.fisch37.villagerespawn.packets.VillageLeftPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+// I mean who cares, it's in there anyway
+import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static de.fisch37.villagerespawn.packets.PacketTypes.*;
-
 public abstract class ClientNetworking {
+    private static @Nullable TriConsumer<NewVillageEnteredPacket, ClientPlayerEntity, PacketSender> newVillageListener;
+
     public static void register() {
-        ClientPlayNetworking.registerGlobalReceiver(VILLAGE_ENTERED_NEW, ClientNetworking::newVillage);
-        ClientPlayNetworking.registerGlobalReceiver(VILLAGE_ENTERED_OLD, ClientNetworking::oldVillage);
-        ClientPlayNetworking.registerGlobalReceiver(VILLAGE_LEFT, ClientNetworking::leftVillage);
+        ClientPlayNetworking.registerGlobalReceiver(NewVillageEnteredPacket.TYPE, ClientNetworking::newVillage);
+        ClientPlayNetworking.registerGlobalReceiver(OldVillageEnteredPacket.TYPE, ClientNetworking::oldVillage);
+        ClientPlayNetworking.registerGlobalReceiver(VillageLeftPacket.TYPE, ClientNetworking::leftVillage);
     }
 
-    public static void newVillage(
-            MinecraftClient client,
-            ClientPlayNetworkHandler handler,
-            PacketByteBuf buf,
+    public static void setNewVillageListener(
+            TriConsumer<NewVillageEnteredPacket, ClientPlayerEntity, PacketSender> listener
+    ) {
+        newVillageListener = listener;
+    }
+
+    private static void newVillage(
+            NewVillageEnteredPacket packet,
+            ClientPlayerEntity player,
             PacketSender responseHandler
     ) {
-        String villageTranslationKey = buf.readString();
-
         setTitleAndSubtitle(
-                client,
-                Text.translatable(villageTranslationKey)
+                MinecraftClient.getInstance(),
+                packet.village().translatable()
+                        .copy()
                         .formatted(Formatting.DARK_GREEN),
                 null
         );
+        if (newVillageListener != null)
+            newVillageListener.accept(packet, player, responseHandler);
     }
 
-    public static void oldVillage(
-            MinecraftClient client,
-            ClientPlayNetworkHandler handler,
-            PacketByteBuf buf,
+    private static void oldVillage(
+            OldVillageEnteredPacket packet,
+            ClientPlayerEntity player,
             PacketSender responseHandler
     ) {
-        String villageTranslationKey = buf.readString();
         setTitleAndSubtitle(
-                client,
-                Text.translatable(villageTranslationKey)
+                MinecraftClient.getInstance(),
+                Text.translatable(packet.name())
                         .formatted(Formatting.GRAY),
                 null
         );
     }
 
-    public static void leftVillage(
-            MinecraftClient client,
-            ClientPlayNetworkHandler handler,
-            PacketByteBuf buf,
+    private static void leftVillage(
+            VillageLeftPacket packet,
+            ClientPlayerEntity player,
             PacketSender responseHandler
     ) {
         setActionBar(
-                client,
+                MinecraftClient.getInstance(),
                 Text.translatable("village.leaving")
-                        .append(Text.translatable(buf.readString()))
+                        .append(Text.translatable(packet.name()))
         );
     }
 
