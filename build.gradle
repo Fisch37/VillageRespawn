@@ -20,6 +20,18 @@ repositories {
         name = "JourneyMap (Public)"
         url = "https://jm.gserv.me/repository/maven-public/"
     }
+
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
@@ -33,6 +45,8 @@ dependencies {
 
     // Journey Map API
     modCompileOnlyApi group: 'info.journeymap', name: 'journeymap-api', version: project.journeymap_api_version, changing: true
+    // Xaero's Minimap
+    modCompileOnlyApi "maven.modrinth:xaeros-minimap:${project.xaero_version}"
 }
 
 processResources {

@@ -21,6 +21,7 @@ import static de.fisch37.villagerespawn.VillageRespawn.MOD_ID;
 public class ServerState extends PersistentState {
     private final Map<UUID, Set<VillageIdentifier.Location>> visitedVillages;
     private final Map<VillageIdentifier.Location, VillageIdentifier> villages;
+    private int lastVillageID = 0;
 
     public ServerState() {
         visitedVillages = new HashMap<>();
@@ -65,6 +66,10 @@ public class ServerState extends PersistentState {
         return identifier;
     }
 
+    public int getNewVillageID() {
+        return lastVillageID++;
+    }
+
 
     @Override
     public NbtCompound writeNbt(NbtCompound nbt) {
@@ -83,11 +88,14 @@ public class ServerState extends PersistentState {
         }
         nbt.put("visited", visitationTable);
 
+        nbt.putInt("lastVillageID", lastVillageID);
+
         return nbt;
     }
 
     public static ServerState createFromNbt(NbtCompound tag) {
         ServerState state = new ServerState();
+        state.lastVillageID = tag.getInt("lastVillageID");
 
         for (NbtElement element : tag.getList("villages", NbtElement.COMPOUND_TYPE)) {
             VillageIdentifier identifier = VillageIdentifier.fromNbt((NbtCompound) element);

@@ -23,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import static de.fisch37.villagerespawn.VillageRespawn.MOD_ID;
 import static de.fisch37.villagerespawn.VillageRespawn.LOG;
 
-public class JourneyMapIntegration implements IClientPlugin {
+public class JourneyMapIntegration extends MinimapIntegration implements IClientPlugin {
     private IClientAPI api;
     private WaypointGroup group;
 
@@ -40,21 +40,12 @@ public class JourneyMapIntegration implements IClientPlugin {
     @Override
     public void initialize(IClientAPI jmClientApi) {
         api = jmClientApi;
-        ClientPlayNetworking.registerGlobalReceiver(
-                VisitedVillagesPacket.TYPE,
-                this::addVisitedVillages
-        );
-        ClientNetworking.setNewVillageListener(this::addNewVillage);
-        ClientPlayConnectionEvents.JOIN.register(
-                (ClientPlayNetworkHandler handler,
-                 PacketSender sender,
-                 MinecraftClient client)
-                -> ClientPlayNetworking.send(new VisitedVillagesRequestPacket())
-        );
+        super.initialize();
         group = new WaypointGroup(MOD_ID, "villages", "Villages");
         LOG.info("Added Journey Map Integration!");
     }
 
+    @Override
     public void addVisitedVillages(
             VisitedVillagesPacket packet,
             ClientPlayerEntity player,
@@ -63,7 +54,8 @@ public class JourneyMapIntegration implements IClientPlugin {
         packet.villages().forEach(this::addVillageWaypoint);
     }
 
-    private void addNewVillage(
+    @Override
+    public void addNewVillage(
             NewVillageEnteredPacket newVillageEnteredPacket,
             ClientPlayerEntity clientPlayerEntity,
             PacketSender packetSender
@@ -93,7 +85,7 @@ public class JourneyMapIntegration implements IClientPlugin {
         Waypoint waypoint = new Waypoint(
                 MOD_ID,
                 generateVillageID(village),
-                I18n.translate(village.name()),
+                village.translated(),
                 village.location().world(),
                 village.getCenter()
         );

@@ -1,5 +1,7 @@
 package de.fisch37.villagerespawn;
 
+import de.fisch37.villagerespawn.server.ServerState;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.RegistryKey;
@@ -17,6 +19,10 @@ import org.jetbrains.annotations.Nullable;
 import static de.fisch37.villagerespawn.VillageRespawn.MOD_ID;
 
 public record VillageIdentifier(
+        // NOTE: This constructor should never be used!
+        // If someone ever dares to set the id manually, things will break!
+        // I can't hide it though, because java sucks and I don't know why I'm doing this to myself please help
+        int id,
         Location location,
         BlockBox boundingBox,
         String name,
@@ -25,9 +31,29 @@ public record VillageIdentifier(
     public static final short VILLAGE_NAME_POOL_SIZE = 666;
     private final static Identifier VILLAGE_RANDOMIZER = Identifier.of(MOD_ID, "village_name_random");
     private static Random RANDOMIZER;
+    private static ServerState STATE;
+
+    public VillageIdentifier(
+            Location location,
+            BlockBox boundingBox,
+            String name,
+            @Nullable BlockPos geographicalCenter
+    ) {
+        this(
+                STATE.getNewVillageID(),
+                location,
+                boundingBox,
+                name,
+                geographicalCenter
+        );
+    }
 
     public Text translatable() {
         return Text.translatable(name);
+    }
+
+    public String translated() {
+        return I18n.translate(name);
     }
 
     public BlockPos getCenter() {
@@ -82,6 +108,7 @@ public record VillageIdentifier(
                 boundingBox.getMaxX(), boundingBox.getMaxY(), boundingBox.getMaxZ()
         });
         compound.putString("name", name);
+        compound.putInt("id", id);
         return compound;
     }
 
@@ -106,12 +133,22 @@ public record VillageIdentifier(
         );
 
         String name = nbt.getString("name");
+        int id;
+        if (nbt.contains("id")) id = nbt.getInt("id");
+        else id = STATE.getNewVillageID();
 
-        return new VillageIdentifier(new Location(world, pos), box, name, geographicalCenter);
+        return new VillageIdentifier(
+                id,
+                new Location(world, pos),
+                box,
+                name,
+                geographicalCenter
+        );
     }
 
-    public static void initialise(ServerWorld world) {
+    public static void initialise(ServerWorld world, ServerState state) {
         RANDOMIZER = world.getOrCreateRandom(VILLAGE_RANDOMIZER);
+        STATE = state;
     }
 
     public record Location(RegistryKey<World> world, BlockPos pos) {

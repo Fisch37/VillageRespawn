@@ -70,7 +70,7 @@ public class VillageRespawn implements ModInitializer {
 
     public void initialiseServer(MinecraftServer server, ServerWorld world) {
         STATE = ServerState.getServerState(server);
-        VillageIdentifier.initialise(world);
+        VillageIdentifier.initialise(world, STATE);
         ServerNetworking.register(STATE);
     }
 
