@@ -36,7 +36,7 @@ public class ServerState extends PersistentState {
         return getVisitedVillages(player.getUuid());
     }
     public Stream<VillageIdentifier> getVisitedVillages(UUID player) {
-        return visitedVillages.get(player)
+        return visitedVillages.getOrDefault(player, Set.of())
                 .stream()
                 .map(villages::get);
     }

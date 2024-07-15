@@ -16,7 +16,7 @@
       "de.fisch37.villagerespawn.client.VillageRespawnClient"
     ],
     "journeymap": [
-      "de.fisch37.villagerespawn.client.JourneyMapIntegration"
+      "de.fisch37.villagerespawn.client.integrations.JourneyMapIntegration.JourneyMapInner"
     ],
     "main": [
       "de.fisch37.villagerespawn.VillageRespawn"
@@ -32,5 +32,9 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}"
+  },
+  "suggests": {
+    "journeymap": "~1.20.1-5.10.0-fabric",
+    "xaerominimap": "~24.2.0_Fabric_1.20"
   }
 }

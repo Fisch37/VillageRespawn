@@ -1,4 +1,4 @@
-package de.fisch37.villagerespawn.client;
+package de.fisch37.villagerespawn.client.integrations;
 
 import de.fisch37.villagerespawn.VillageIdentifier;
 import de.fisch37.villagerespawn.packets.NewVillageEnteredPacket;
@@ -14,12 +14,11 @@ import java.util.Hashtable;
 
 import static de.fisch37.villagerespawn.VillageRespawn.MOD_ID;
 
-public class XaerosIntegration extends MinimapIntegration {
+public class XaerosIntegration implements MinimapIntegration {
     private final Hashtable<Integer, Waypoint> xaerosCustomWaypointsHook;
 
     public XaerosIntegration() {
         xaerosCustomWaypointsHook = WaypointsManager.getCustomWaypoints(MOD_ID);
-        initialize();
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> clearAllWaypoints());
     }
