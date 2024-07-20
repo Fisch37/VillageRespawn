@@ -20,6 +20,7 @@ public class VillageRespawnClient implements ClientModInitializer {
      */
     @Override
     public void onInitializeClient() {
+        BeaconUtils.register();
         ClientNetworking.register();
 
         IntegrationAPI.registerIntegration(XAEROS_MOD_ID, XaerosIntegration.class);
