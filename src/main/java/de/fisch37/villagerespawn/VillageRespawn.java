@@ -1,26 +1,15 @@
 package de.fisch37.villagerespawn;
 
+import de.fisch37.villagerespawn.server.PlayerInteractions;
 import de.fisch37.villagerespawn.server.ServerNetworking;
 import de.fisch37.villagerespawn.server.ServerState;
-import de.fisch37.villagerespawn.server.StructureChecker;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.BellBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static de.fisch37.villagerespawn.server.ServerUtils.findSafePosition;
 
 public class VillageRespawn implements ModInitializer {
     public final static String MOD_ID = "village_respawn";
@@ -34,38 +23,7 @@ public class VillageRespawn implements ModInitializer {
     @Override
     public void onInitialize() {
         ServerWorldEvents.LOAD.register(this::initialiseServer);
-        UseBlockCallback.EVENT.register(this::setSpawnBellClicked);
-    }
-
-    private ActionResult setSpawnBellClicked(
-            PlayerEntity player,
-            World world,
-            Hand hand,
-            BlockHitResult blockHitResult
-    ) {
-        if (!player.isPartOfGame() || !player.isSneaking())
-            return ActionResult.PASS;
-        BlockState block = world.getBlockState(blockHitResult.getBlockPos());
-        if (!(block.getBlock() instanceof BellBlock))
-            return ActionResult.PASS;
-
-        if (player instanceof ServerPlayerEntity serverPlayer) {
-            if (StructureChecker.isInVillage(serverPlayer.getServerWorld(), blockHitResult.getBlockPos()) == null) {
-                serverPlayer.sendMessageToClient(
-                        Text.translatable(String.format("%s.bell.no_village_error", MOD_ID)),
-                        true
-                );
-                return ActionResult.CONSUME;
-            }
-            serverPlayer.setSpawnPoint(
-                    world.getRegistryKey(),
-                    findSafePosition(world, blockHitResult.getBlockPos()),
-                    -player.getYaw(),
-                    true,
-                    true
-            );
-        }
-        return ActionResult.SUCCESS;
+        UseBlockCallback.EVENT.register(PlayerInteractions::setSpawnBellClicked);
     }
 
     public void initialiseServer(MinecraftServer server, ServerWorld world) {
