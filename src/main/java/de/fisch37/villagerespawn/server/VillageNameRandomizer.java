@@ -1,6 +1,7 @@
 package de.fisch37.villagerespawn.server;
 
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.structure.StructureStart;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 
@@ -16,7 +17,7 @@ public class VillageNameRandomizer {
         random = world.getOrCreateRandom(VILLAGE_RANDOMIZER);
     }
 
-    public String getRandomName() {
+    public String getRandomName(StructureStart structure) {
         int value = random.nextBetween(0, VILLAGE_NAME_POOL_SIZE);
         return String.format("village.name.%d", value);
     }

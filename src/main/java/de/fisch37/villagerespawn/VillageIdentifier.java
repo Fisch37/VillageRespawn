@@ -70,7 +70,7 @@ public record VillageIdentifier(
         return new VillageIdentifier(
                 locationFromStructureAndWorld(world, structure),
                 structure.getBoundingBox(),
-                RANDOMIZER.getRandomName(),
+                RANDOMIZER.getRandomName(structure),
                 center
         );
     }
