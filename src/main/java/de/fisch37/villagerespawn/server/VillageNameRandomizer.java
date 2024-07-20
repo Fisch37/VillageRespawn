@@ -18,7 +18,16 @@ public class VillageNameRandomizer {
     }
 
     public String getRandomName(StructureStart structure) {
-        int value = random.nextBetween(0, VILLAGE_NAME_POOL_SIZE);
+        int value = getRandForStructure(structure);
         return String.format("village.name.%d", value);
+    }
+
+    private int getRandForStructure(StructureStart structure) {
+        // TODO: Use some kind of hash-like system to generate a "random" value.
+        //  Essentially, I want to base the name of a village off the world seed
+        //  and its unique identifier (i.e. the BlockPos of the structure).
+        //  This means village names are seed-dependent and therefore consistent
+        //  across users.
+        return random.nextBetween(0, VILLAGE_NAME_POOL_SIZE);
     }
 }
