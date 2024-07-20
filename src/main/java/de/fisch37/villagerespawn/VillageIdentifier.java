@@ -1,6 +1,7 @@
 package de.fisch37.villagerespawn;
 
 import de.fisch37.villagerespawn.server.ServerState;
+import de.fisch37.villagerespawn.server.VillageNameRandomizer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -12,11 +13,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import static de.fisch37.villagerespawn.VillageRespawn.MOD_ID;
 
 public record VillageIdentifier(
         // NOTE: This constructor should never be used!
@@ -28,9 +26,7 @@ public record VillageIdentifier(
         String name,
         @Nullable BlockPos geographicalCenter
 ) {
-    public static final short VILLAGE_NAME_POOL_SIZE = 666;
-    private final static Identifier VILLAGE_RANDOMIZER = Identifier.of(MOD_ID, "village_name_random");
-    private static Random RANDOMIZER;
+    private static VillageNameRandomizer RANDOMIZER;
     private static ServerState STATE;
 
     public VillageIdentifier(
@@ -65,11 +61,6 @@ public record VillageIdentifier(
         return location.hashCode();
     }
 
-    private static String getRandomName() {
-        int value = RANDOMIZER.nextBetween(0, VILLAGE_NAME_POOL_SIZE);
-        return String.format("village.name.%d", value);
-    }
-
     public static VillageIdentifier fromStructure(
             RegistryKey<World> world,
             StructureStart structure,
@@ -79,7 +70,7 @@ public record VillageIdentifier(
         return new VillageIdentifier(
                 locationFromStructureAndWorld(world, structure),
                 structure.getBoundingBox(),
-                getRandomName(),
+                RANDOMIZER.getRandomName(),
                 center
         );
     }
@@ -147,7 +138,7 @@ public record VillageIdentifier(
     }
 
     public static void initialise(ServerWorld world, ServerState state) {
-        RANDOMIZER = world.getOrCreateRandom(VILLAGE_RANDOMIZER);
+        RANDOMIZER = new VillageNameRandomizer(world);
         STATE = state;
     }
 
