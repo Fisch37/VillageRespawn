@@ -98,7 +98,7 @@ public abstract class IntegrationAPI {
                 return clazz.getConstructor().newInstance();
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 // Concatenation is necessary here because we want the Throwable version of error.
-                LOG.error("Failed to instantiate minimap integration " + clazz.toString(), e);
+                LOG.error("Failed to instantiate minimap integration " + clazz, e);
                 return null;
             }
         });

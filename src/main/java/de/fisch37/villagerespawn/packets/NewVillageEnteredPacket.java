@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.network.PacketByteBuf;
 
+import java.util.Objects;
+
 public record NewVillageEnteredPacket(VillageIdentifier village) implements FabricPacket {
     public static final PacketType<NewVillageEnteredPacket> TYPE = PacketType.create(
             PacketTypes.VILLAGE_ENTERED_NEW,
@@ -13,7 +15,7 @@ public record NewVillageEnteredPacket(VillageIdentifier village) implements Fabr
 
 
     public NewVillageEnteredPacket(PacketByteBuf buf) {
-        this(VillageIdentifier.fromNbt(buf.readNbt()));
+        this(VillageIdentifier.fromNbt(Objects.requireNonNull(buf.readNbt())));
     }
 
     /**

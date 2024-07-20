@@ -6,7 +6,6 @@ import de.fisch37.villagerespawn.packets.VisitedVillagesPacket;
 import journeymap.client.api.IClientAPI;
 import journeymap.client.api.IClientPlugin;
 import journeymap.client.api.display.DisplayType;
-import journeymap.client.api.display.Displayable;
 import journeymap.client.api.display.Waypoint;
 import journeymap.client.api.display.WaypointGroup;
 import journeymap.client.api.event.ClientEvent;

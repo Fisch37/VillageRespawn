@@ -28,23 +28,6 @@ public abstract class ServerPlayerEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "tick")
     private void onTick(CallbackInfo info) {
-        /*
-            TODO: Determine if a player has visited a given village
-                This could be done using the StructureStart.
-                Position and bounding box ought to uniquely identify a structure.
-                Position would probably suffice.
-                Reason I want this is to change behaviour if a village was visited before.
-                    New villages should always set spawn, but old ones should notify and maybe ask?
-                    or players might need to ring the bell
-                I could also give each village a unique name if I wanted to?
-                    Would be good for immersion, can use the bounding box and position as a random seed
-                        (along with the... seed)
-                Maybe integrate with a waypoint system at some other point?
-                    Xaero doesn't really want to give people an API though
-                    I can definitely do JourneyMap though!
-
-         */
-
         ServerPlayerEntity player = (ServerPlayerEntity)((Object)this);
         ServerWorld world = player.getServerWorld();
         assert world != null;

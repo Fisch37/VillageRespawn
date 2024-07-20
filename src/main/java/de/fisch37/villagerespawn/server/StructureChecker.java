@@ -59,10 +59,6 @@ public class StructureChecker {
                 .keySet();
 
         for (Structure struct : structures) {
-            // TODO:
-            //  world.getRegistryManager().get(RegistryKeys.STRUCTURE).getEntrySet().iterator().next().getValue()
-            //  == struct
-            //  Use this with a new tag for all structures you want to match!
             if (!structureIsVillage(struct, world))
                 continue;
             StructureStart start = accessor.getStructureAt(position, struct);

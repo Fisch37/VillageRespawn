@@ -5,8 +5,6 @@ import de.fisch37.villagerespawn.client.integrations.MinimapIntegration;
 import de.fisch37.villagerespawn.client.integrations.XaerosIntegration;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
