@@ -4,7 +4,9 @@ import de.fisch37.villagerespawn.client.integrations.JourneyMapIntegration;
 import de.fisch37.villagerespawn.client.integrations.MinimapIntegration;
 import de.fisch37.villagerespawn.client.integrations.XaerosIntegration;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.Optional;
 
@@ -31,6 +33,9 @@ public class VillageRespawnClient implements ClientModInitializer {
             if (hasTriggeredPostLoad) return;
             postLoad();
             hasTriggeredPostLoad = true;
+        });
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            BeaconUtils.spawnBeam(handler.getWorld(), new BlockPos(0,0,0));
         });
     }
 
