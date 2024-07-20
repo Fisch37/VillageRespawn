@@ -1,8 +1,7 @@
 package de.fisch37.villagerespawn.server;
 
 import de.fisch37.villagerespawn.VillageIdentifier;
-import net.minecraft.block.RespawnAnchorBlock;
-import net.minecraft.entity.EntityType;
+import de.fisch37.villagerespawn.server.respawn.RespawnFinder;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
@@ -72,9 +71,10 @@ public class VillageUpdateManager {
     }
 
     public static @Nullable BlockPos findSafePosition(CollisionView world, BlockPos pos) {
-        return RespawnAnchorBlock
-                .findRespawnPosition(EntityType.PLAYER, world, pos)
-                .map(BlockPos::ofFloored)
-                .orElse(null);
+        return RespawnFinder.findRespawnPosition(pos, world).orElse(null);
+//        return RespawnAnchorBlock
+//                .findRespawnPosition(EntityType.PLAYER, world, pos)
+//                .map(BlockPos::ofFloored)
+//                .orElse(null);
     }
 }
